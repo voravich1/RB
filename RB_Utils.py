@@ -20,7 +20,15 @@ def readVCF(inVCF):
     variantNumber = 0
     mutation_type = ""
     prior_chr = ""
-    prior_pos = ""
+    prior_pos = 0
+    first_line_data_flag = True
+
+
+    # variable require for create rain fall plot
+    variant_pos_list = []       # list of SNP position
+    variant_pos_list_dict = {}  # key is chromosome | value is list of SNP position
+    mutationType_list = []      # list of mutation type
+    mutationType_list_dict = {} # key is chromosome | value is list of mutation type
 
     with open(inVCF) as vcfFile:
 
@@ -45,20 +53,38 @@ def readVCF(inVCF):
             format = array_vcfInfo[8]
 
             for idx in list(range(len(array_Column_Header))):
-
+                format_dict = {}
                 if idx > 8:
                     dummyFormatHead = format.split(":")
-                    dummyFormatInfo = array_vcfInfo[idx].split()
+                    dummyFormatInfo = array_vcfInfo[idx].split(":")
                     dummySample = array_Column_Header[idx]
 
                     for colNum in list(range(len(dummyFormatHead))):
                         key = dummyFormatHead[colNum]
-                        value = dummyFormatInfo[colNum]
-                        format_dict.update({key:value})
+                        if colNum >= len(dummyFormatInfo):
+                            value = "."
+                        else :
+                            value = dummyFormatInfo[colNum]
+                        format_dict.update({key: value})
 
-                    sample_format_dict.update({dummySample:format_dict})
+                    sample_format_dict.update({dummySample: format_dict})
                     continue
 
             # Start part analyze data for rain fall plot
+            print("555")
+
+            mutation_type = classifyMutationType(ref , alt)
+
+            if(first_line_data_flag == True):
+                prior_pos = pos
+                prior_chr = chr
+                first_line_data_flag = False
+
+            if prior_pos == pos :
+                variant_pos_list.append(pos)
+
+
+    def classifyMutationType(ref , alt):
+
 
 
