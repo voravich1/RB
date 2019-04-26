@@ -1,8 +1,8 @@
 import sys
-
+import os
 import matplotlib
 from matplotlib import pyplot as plt
-
+import matplotlib.backends.backend_pdf
 import math
 
 def readVCF(inVCF):
@@ -135,88 +135,106 @@ def classifyMutationType(ref, alt):
     if mutationType == "TG" or mutationType == "AC":
         return "TG"
 
-def plotRainFallMutationType(variant_pos_list_dict: dict, mutationType_list_dict: dict):
-    fig, ax = plt.subplots()
+def plotRainFallMutationType(variant_pos_list_dict: dict, mutationType_list_dict: dict, savePath, saveFilePrefix):
+    saveFile = os.path.join(savePath, saveFilePrefix + '_plotTestest.pdf')
+    pdf = matplotlib.backends.backend_pdf.PdfPages(saveFile)
+    column_max = 4
+    row_max = 6
+    count = 0
+    for chrName in variant_pos_list_dict.keys():
+        if chrName == "chrM" or chrName == "MT":
+            continue
+        count+=1
+        #plt.figure()
+        fig, ax = plt.subplots(figsize=(20,10))
 
-    mutation_list = mutationType_list_dict.get("chr1")
-    variant_list = variant_pos_list_dict.get("chr1")
+        mutation_list = mutationType_list_dict.get(chrName)
+        variant_list = variant_pos_list_dict.get(chrName)
 
-    n = len(mutation_list)
+        n = len(mutation_list)
 
-    axisPlot = []
-    listCA_x = []
-    listCA_y = []
-    listCG_x = []
-    listCG_y = []
-    listCT_x = []
-    listCT_y = []
-    listTA_x = []
-    listTA_y = []
-    listTC_x = []
-    listTC_y = []
-    listTG_x = []
-    listTG_y = []
+        axisPlot = []
+        listCA_x = []
+        listCA_y = []
+        listCG_x = []
+        listCG_y = []
+        listCT_x = []
+        listCT_y = []
+        listTA_x = []
+        listTA_y = []
+        listTC_x = []
+        listTC_y = []
+        listTG_x = []
+        listTG_y = []
 
-    for idx in range(1,len(variant_list)):
-        query_idx = idx-1
+        for idx in range(1,len(variant_list)):
+            query_idx = idx-1
 
-        y = math.log10(int(variant_list[query_idx+1]) - int(variant_list[query_idx]))
-        x = int(variant_list[query_idx+1])
-        mutationType = mutation_list[query_idx+1]
+            y = math.log10(int(variant_list[query_idx+1]) - int(variant_list[query_idx]))
+            x = int(variant_list[query_idx+1])
+            mutationType = mutation_list[query_idx+1]
 
-        if mutationType == "CA":
-            listCA_x.append(x)
-            listCA_y.append(y)
-        elif mutationType == "CG":
-            listCG_x.append(x)
-            listCG_y.append(y)
-        elif mutationType == "CT":
-            listCT_x.append(x)
-            listCT_y.append(y)
-        elif mutationType == "TA":
-            listTA_x.append(x)
-            listTA_y.append(y)
-        elif mutationType == "TC":
-            listTC_x.append(x)
-            listTC_y.append(y)
-        elif mutationType == "TG":
-            listTG_x.append(x)
-            listTG_y.append(y)
+            if mutationType == "CA":
+                listCA_x.append(x)
+                listCA_y.append(y)
+            elif mutationType == "CG":
+                listCG_x.append(x)
+                listCG_y.append(y)
+            elif mutationType == "CT":
+                listCT_x.append(x)
+                listCT_y.append(y)
+            elif mutationType == "TA":
+                listTA_x.append(x)
+                listTA_y.append(y)
+            elif mutationType == "TC":
+                listTC_x.append(x)
+                listTC_y.append(y)
+            elif mutationType == "TG":
+                listTG_x.append(x)
+                listTG_y.append(y)
 
-    for idx in range(6):
+        for idx in range(6):
 
-        if idx == 0:
-            color = "blue"
-            mutationType="C>A"
-            ax.scatter(listCA_x, listCA_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
-        elif idx == 1:
-            color = "black"
-            mutationType = "C>G"
-            ax.scatter(listCG_x, listCG_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
-        elif idx == 2:
-            color = "red"
-            mutationType = "C>T"
-            ax.scatter(listCT_x, listCT_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
-        elif idx == 3:
-            color = "pink"
-            mutationType = "T>A"
-            ax.scatter(listTA_x, listTA_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
-        elif idx == 4:
-            color = "yellow"
-            mutationType = "T>C"
-            ax.scatter(listTC_x, listTC_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
-        elif idx == 5:
-            color = "green"
-            mutationType = "T>G"
-            ax.scatter(listTG_x, listTG_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+            if idx == 0:
+                color = "blue"
+                mutationType="C>A"
+                ax.scatter(listCA_x, listCA_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+            elif idx == 1:
+                color = "black"
+                mutationType = "C>G"
+                ax.scatter(listCG_x, listCG_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+            elif idx == 2:
+                color = "red"
+                mutationType = "C>T"
+                ax.scatter(listCT_x, listCT_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+            elif idx == 3:
+                color = "pink"
+                mutationType = "T>A"
+                ax.scatter(listTA_x, listTA_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+            elif idx == 4:
+                color = "yellow"
+                mutationType = "T>C"
+                ax.scatter(listTC_x, listTC_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+            elif idx == 5:
+                color = "green"
+                mutationType = "T>G"
+                ax.scatter(listTG_x, listTG_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
 
 
+        saveFile = os.path.join(savePath,saveFilePrefix+'_plot_'+chrName+'.pdf')
+        ax.legend()
+        ax.grid(True)
 
-    ax.legend()
-    ax.grid(True)
+        #plt.subplot(row_max, column_max, count)
+        #plt.figure(count)
+        plt.title("Rainfall plot of "+chrName)
+        plt.xlabel("Genomic position")
+        plt.ylabel("Intermutation distance (log(bp))")
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        #plt.savefig(saveFile, bbox_inches='tight')
+        pdf.savefig(fig, bbox_inches='tight')
+        plt.close(fig)
+    pdf.close()
+    #plt.show()
 
-    plt.title("RainFall Plot of Chr1")
-    plt.xlabel("Genomic position")
-    plt.ylabel("Intermutation distance (log(bp))")
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.show()
+#def plotMultipleRainFallMutationType()
