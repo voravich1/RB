@@ -1,8 +1,6 @@
 import sys
 
-#To import matplotlob on macOS plase use syntax as tree line below
 import matplotlib
-matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 
 import math
@@ -145,6 +143,20 @@ def plotRainFallMutationType(variant_pos_list_dict: dict, mutationType_list_dict
 
     n = len(mutation_list)
 
+    axisPlot = []
+    listCA_x = []
+    listCA_y = []
+    listCG_x = []
+    listCG_y = []
+    listCT_x = []
+    listCT_y = []
+    listTA_x = []
+    listTA_y = []
+    listTC_x = []
+    listTC_y = []
+    listTG_x = []
+    listTG_y = []
+
     for idx in range(1,len(variant_list)):
         query_idx = idx-1
 
@@ -153,21 +165,58 @@ def plotRainFallMutationType(variant_pos_list_dict: dict, mutationType_list_dict
         mutationType = mutation_list[query_idx+1]
 
         if mutationType == "CA":
-            color = "red"
+            listCA_x.append(x)
+            listCA_y.append(y)
         elif mutationType == "CG":
-            color = "blue"
+            listCG_x.append(x)
+            listCG_y.append(y)
         elif mutationType == "CT":
-            color = "green"
+            listCT_x.append(x)
+            listCT_y.append(y)
         elif mutationType == "TA":
-            color = "yellow"
+            listTA_x.append(x)
+            listTA_y.append(y)
         elif mutationType == "TC":
-            color = "pink"
+            listTC_x.append(x)
+            listTC_y.append(y)
         elif mutationType == "TG":
-            color = "black"
+            listTG_x.append(x)
+            listTG_y.append(y)
 
-        ax.scatter(x, y, c=color, label=mutationType, alpha=0.3, edgecolors='none')
+    for idx in range(6):
+
+        if idx == 0:
+            color = "blue"
+            mutationType="C>A"
+            ax.scatter(listCA_x, listCA_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+        elif idx == 1:
+            color = "black"
+            mutationType = "C>G"
+            ax.scatter(listCG_x, listCG_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+        elif idx == 2:
+            color = "red"
+            mutationType = "C>T"
+            ax.scatter(listCT_x, listCT_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+        elif idx == 3:
+            color = "pink"
+            mutationType = "T>A"
+            ax.scatter(listTA_x, listTA_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+        elif idx == 4:
+            color = "yellow"
+            mutationType = "T>C"
+            ax.scatter(listTC_x, listTC_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+        elif idx == 5:
+            color = "green"
+            mutationType = "T>G"
+            ax.scatter(listTG_x, listTG_y, c=color, label=mutationType, alpha=0.75, edgecolors='none')
+
+
 
     ax.legend()
     ax.grid(True)
 
+    plt.title("RainFall Plot of Chr1")
+    plt.xlabel("Genomic position")
+    plt.ylabel("Intermutation distance (log(bp))")
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.show()
