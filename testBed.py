@@ -14,6 +14,8 @@ saveFilePrefix=sys.argv[3]
 
 
 
-variant_pos_list_dict, mutationType_list_dict = rb.readVCF(inputFile)
+#variant_pos_list_dict, mutationType_list_dict = rb.readVCF(inputFile)
 
-rb.plotRainFallMutationType(variant_pos_list_dict, mutationType_list_dict, saveFilePath, saveFilePrefix)
+#rb.plotRainFallMutationType(variant_pos_list_dict, mutationType_list_dict, saveFilePath, saveFilePrefix)
+
+rb.plotHeatMapTrinucleotide("/Users/worawich/Download_dataset/Ratina_cancer/Mutect_dnabrick_result/set3_dnabrick/529_somatic_trinucleotide.csv")
