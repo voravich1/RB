@@ -248,6 +248,7 @@ def plotHeatMapTrinucleotide(Trinucleotide_raw_File):
     fileName = ntpath.basename(Trinucleotide_raw_File)
     sampleName = fileName.split("_")[0]
     firstLineFlag = True
+    firstSecondLineFlag = True
     data_row_count = 0
 
     mutation_type_dict = {}
@@ -259,8 +260,11 @@ def plotHeatMapTrinucleotide(Trinucleotide_raw_File):
                 firstLineFlag=False
                 continue
             elif line[0] == "M":
+                if firstSecondLineFlag == False:
+                    mutation_type_dict.update({mutation_type: freq_data_array})
                 info = line.split()
                 mutation_type=info[3]
+                firstSecondLineFlag = False
             elif line[0] == "B":
                 info = line.split(",")
                 freq_data = []
@@ -276,16 +280,24 @@ def plotHeatMapTrinucleotide(Trinucleotide_raw_File):
                         value_list.append(int(info[idx]))
                 freq_data.append(value_list)
                 freq_data_array = np.asarray(freq_data)
+        mutation_type_dict.update({mutation_type: freq_data_array})
 
-                # start plot heatMap
-                fig, ax = plt.subplot()
 
-                im, cbar = heatmap(freq_data_array,y_5prime,x_3prime,ax=ax,cmap="YlGn",cbarlabel="InterMutation (log10)")
+    # Continue Here
+    # start plot heatMap
+    fig, ax = plt.subplots()
 
-                fig.tight_layout()
-                plt.show()
+    for key, value in mutation_type_dict.items():
+        mutation_type = key
+        freq_data_array = value
 
-        print()
+
+        im, cbar = heatmap(freq_data_array,y_5prime,x_3prime,ax=ax,cmap="YlGn",cbarlabel="InterMutation (log10)")
+
+        fig.tight_layout()
+        plt.show()
+
+    print()
 
 
 
